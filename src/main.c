@@ -4,16 +4,13 @@
 #include <stdbit.h>
 #include <stdio.h>
 #include "./error.h"
+#include "./server.h"
 
 #define SERVER_PORT 8080
-#define BUFSIZE 4096
 #define SERVER_BACKLOG 1
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
-
-// handle_connection handles an incomming connection from a given `client_socket`
-void handle_connection(int client_socket);
 
 int main(int argc, char **argv)
 {
