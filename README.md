@@ -20,8 +20,8 @@ This repository contains a configurable TCP server implemented in C. The project
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Turtel216/wired-tcp-server.git
-cd wired-tcp-server
+git clone https://github.com/Turtel216/cwired-tcp-server.git
+cd cwired-tcp-server
 ```
 
 ### 2. Build the Project
@@ -38,17 +38,17 @@ cmake --build .
 The server defaults to `localhost:8080`. You can override these defaults using command-line arguments.
 
 ```bash
-./tcp_server [host] [port]
+./cp [host] [port]
 ```
 
 **Examples:**
 
 ```bash
 # Run with default settings (localhost:8080)
-./tcp_server
+./cp
 
 # Run on a custom port
-./tcp_server 127.0.0.1 9090
+./cp 127.0.0.1 9090
 ```
 
 ### 4. Test the Server
@@ -63,7 +63,7 @@ Type the file path you wish to retrieve, and the server will return the content 
 
 ## Configuration
 
-The server can be configured by editing the `config.h` file or passing arguments at startup. Options include:
+The server can be configured by passing arguments at startup. Options include:
 
 - `host`: The IP address to bind the server to (default: `127.0.0.1`).  
 - `port`: The port number to listen on (default: `8080`).  
