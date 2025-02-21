@@ -38,17 +38,17 @@ cmake --build .
 The server defaults to `localhost:8080`. You can override these defaults using command-line arguments.
 
 ```bash
-./cp [host] [port]
+./cw [host] [port]
 ```
 
 **Examples:**
 
 ```bash
 # Run with default settings (localhost:8080)
-./cp
+./cw
 
 # Run on a custom port
-./cp 127.0.0.1 9090
+./cw 127.0.0.1 9090
 ```
 
 ### 4. Test the Server
