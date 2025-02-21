@@ -1,49 +1,48 @@
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <stdbit.h>
 #include <stdio.h>
-#include <string.h>
-#include <arpa/inet.h>
+#include "./error.h"
 
-int main()
+#define SERVER_PORT 8080
+#define BUFSIZE 4096
+#define SERVER_BACKLOG 1
+
+typedef struct sockaddr_in SA_IN;
+typedef struct sockaddr SA;
+
+// handle_connection handles an incomming connection from a given `client_socket`
+void handle_connection(int client_socket);
+
+int main(int argc, char **argv)
 {
-	int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+	int server_socket, client_socket, addr_size;
+	SA_IN server_addr, client_addr;
 
-	struct sockaddr_in address;
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = inet_addr("127.0.0.1");
-	address.sin_port = htons(8080);
-	bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+	check_err((server_socket = socket(AF_INET, SOCK_STREAM, 0)),
+		  "Failed to create socket");
 
-	listen(server_fd, 3);
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = INADDR_ANY;
+	server_addr.sin_port = htons(SERVER_PORT);
 
-	printf("Server is running and listening on port 8080...\n");
+	check_err(bind(server_socket, (SA *)&server_addr, sizeof(server_addr)),
+		  "Bind Failed");
+	check_err(listen(server_socket, SERVER_BACKLOG), "Listen Failed");
 
-	while (1) {
-		int addrlen = sizeof(address);
-		int new_socket = accept(server_fd, (struct sockaddr *)&address,
-					(socklen_t *)&addrlen);
+	while (true) {
+		printf("Waiting for connections\n");
 
-		if (new_socket < 0) {
-			perror("Failed to accept connection");
-			continue;
-		}
+		addr_size = sizeof(SA_IN);
+		check_err(client_socket = accept(server_socket,
+						 (SA *)&client_addr,
+						 (socklen_t *)&addr_size),
+			  "Accept Failed");
+		printf("Connected\n");
 
-		printf("Connection accepted.\n");
-
-		char buffer[1024] = { 0 };
-		read(new_socket, buffer, 1024);
-		printf("Client message: %s\n", buffer);
-
-		// Respond to the client
-		char *response = "Hello from server!";
-		write(new_socket, response, strlen(response));
-
-		close(new_socket);
-		printf("Connection closed.\n");
+		handle_connection(client_socket);
 	}
 
-	close(server_fd);
-
-	return 0;
+	return EXIT_SUCCESS;
 }
