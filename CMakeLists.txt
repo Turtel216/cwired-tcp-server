@@ -3,7 +3,7 @@ project(hermit)
 
 enable_testing()
 
-add_executable ( hp src/main.c )
+add_executable ( hp src/main.c src/error.c src/server.c )
 
 #Tests
 # add_executable ()

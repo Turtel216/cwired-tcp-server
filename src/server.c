@@ -22,34 +22,34 @@ void handle_connection(int client_socket)
 		msg_size += bytes_read;
 		if (msg_size > BUFSIZE - 1 || buffer[msg_size - 1] == '\n')
 			break;
-
-		check_err(bytes_read, "recv error");
-		buffer[msg_size - 1] = 0; // null terminate the message
-
-		printf("REQUEST: %s\n", buffer);
-		fflush(stdout);
-
-		if (realpath(buffer, actual_path) == NULL) {
-			printf("ERROR, bad path: %s\n", buffer);
-			close(client_socket);
-			return;
-		}
-
-		FILE *fp = fopen(actual_path, "r");
-		if (fp == NULL) {
-			printf("ERROR, open: %s\n", buffer);
-			close(client_socket);
-			return;
-		}
-
-		// Very insecure. TODO limit client to certain files
-		while ((bytes_read = fread(buffer, 1, BUFSIZE, fp)) > 0) {
-			printf("sending %zu bytes\n", bytes_read);
-			write(client_socket, buffer, bytes_read);
-		}
-
-		close(client_socket);
-		fclose(fp);
-		printf("closing connection\n");
 	}
+
+	check_err(bytes_read, "recv error");
+	buffer[msg_size - 1] = 0; // null terminate the message
+
+	printf("REQUEST: %s\n", buffer);
+	fflush(stdout);
+
+	if (realpath(buffer, actual_path) == NULL) {
+		printf("ERROR, bad path: %s\n", buffer);
+		close(client_socket);
+		return;
+	}
+
+	FILE *fp = fopen(actual_path, "r");
+	if (fp == NULL) {
+		printf("ERROR, open: %s\n", buffer);
+		close(client_socket);
+		return;
+	}
+
+	// Very insecure. TODO limit client to certain files
+	while ((bytes_read = fread(buffer, 1, BUFSIZE, fp)) > 0) {
+		printf("sending %zu bytes\n", bytes_read);
+		write(client_socket, buffer, bytes_read);
+	}
+
+	close(client_socket);
+	fclose(fp);
+	printf("closing connection\n");
 }
