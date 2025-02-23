@@ -6,7 +6,7 @@
 // check_err handles errors if they return SOCKETERROR. When an error
 // is encountered it prints the error message `msg` and exits with  EXIT_FAILURE.
 // Otherwise it returns the `exp`.
-int check_err(int exp, const char *msg)
+int check_err(int exp, const char msg[static 1])
 {
 	if (exp == SOCKETERROR) {
 		perror(msg);
