@@ -3,11 +3,12 @@
 #include <sys/socket.h>
 #include <stdbit.h>
 #include <stdio.h>
+#include <pthread.h>
 #include "./error.h"
 #include "./server.h"
 
 #define SERVER_PORT 8080
-#define SERVER_BACKLOG 1
+#define SERVER_BACKLOG 100
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
@@ -38,7 +39,11 @@ int main(int argc, char **argv)
 			  "Accept Failed");
 		printf("Connected\n");
 
-		handle_connection(client_socket);
+		// Spawn new thread to handle connection
+		pthread_t thr;
+		int *pclient = malloc(sizeof(int));
+		*pclient = client_socket;
+		pthread_create(&thr, NULL, handle_connection, pclient);
 	}
 
 	return EXIT_SUCCESS;

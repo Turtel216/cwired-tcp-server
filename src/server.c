@@ -9,8 +9,10 @@
 #define BUFSIZE 4096
 
 // handle_connection handles an incomming connection from a given `client_socket`
-void handle_connection(int client_socket)
+void *handle_connection(void *pclient_socket)
 {
+	int client_socket = *((int *)pclient_socket);
+	free(pclient_socket);
 	char buffer[BUFSIZE];
 	size_t bytes_read;
 	int msg_size = 0;
@@ -33,14 +35,14 @@ void handle_connection(int client_socket)
 	if (realpath(buffer, actual_path) == NULL) {
 		printf("ERROR, bad path: %s\n", buffer);
 		close(client_socket);
-		return;
+		return NULL;
 	}
 
 	FILE *fp = fopen(actual_path, "r");
 	if (fp == NULL) {
 		printf("ERROR, open: %s\n", buffer);
 		close(client_socket);
-		return;
+		return NULL;
 	}
 
 	// Very insecure. TODO limit client to certain files
@@ -52,4 +54,5 @@ void handle_connection(int client_socket)
 	close(client_socket);
 	fclose(fp);
 	printf("closing connection\n");
+	return NULL;
 }
