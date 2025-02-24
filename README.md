@@ -69,6 +69,50 @@ The server can be configured by passing arguments at startup. Options include:
 - `port`: The port number to listen on (default: `8080`).  
 - `max_connections`: Maximum number of simultaneous clients (default: `10`).  
 
+## Benchmark Utility for TCP Server
+
+### Overview
+This utility benchmarks the performance of your TCP server by simulating concurrent client connections that request a specified file. It measures latency, throughput, and error rates to help you optimize your server.
+
+### How It Works
+- Uses `socket` to establish TCP connections.
+- Sends a file path to the server and receives the file content.
+- Measures response time and tracks errors.
+- Supports configurable concurrency and request limits.
+
+### Requirements
+- Python 3.7 or higher
+
+### Configuration
+Modify the following variables in the script to suit your needs:
+```python
+SERVER_HOST = "127.0.0.1"  # Server IP address
+SERVER_PORT = 8080          # Server port
+FILE_PATH = "/path/to/benchmark/file.txt"
+CONCURRENT_CONNECTIONS = 50
+TOTAL_REQUESTS = 500
+```
+
+### Usage
+```bash
+# Run the benchmark
+python ./benchmark/benchmark.py
+```
+
+### Output
+```
+Total Requests: 500
+Concurrent Connections: 50
+Total Time: 5.72 seconds
+Requests per Second: 87.41
+Average Latency: 0.0645 seconds
+Error Rate: 0.00%
+```
+
+### Customization
+- Adjust `CONCURRENT_CONNECTIONS` and `TOTAL_REQUESTS` to simulate different workloads.
+- Handle server-specific protocols if needed.
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request if you'd like to improve the codebase or documentation.
