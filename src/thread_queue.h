@@ -1,7 +1,7 @@
 #ifndef THREAD_QUEUE_H_
 #define THREAD_QUEUE_H_
 
-// Queue node
+// Thread queue node
 struct node {
 	struct node *next; // pointer to next node
 	int *client_socket; // client socket id

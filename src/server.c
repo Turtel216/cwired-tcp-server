@@ -1,6 +1,5 @@
 #include "server.h"
 #include "error.h"
-#include "thread_queue.h"
 
 #include <bits/pthreadtypes.h>
 #include <linux/limits.h>
@@ -9,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// Incoming message buffer sizer
 #define BUFSIZE 4096
 
 // handle_connection handles an incomming connection from a given `client_socket`

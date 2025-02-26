@@ -8,17 +8,20 @@
 #include "./server.h"
 #include "./thread_queue.h"
 
+// Config Macros
 #define SERVER_PORT 8080
 #define SERVER_BACKLOG 100
 #define THREAD_POOL_SIZE 20
 
+// GLOBAL VARIABLES
 // thread pool for handling connections
-pthread_t thread_pool[THREAD_POOL_SIZE];
+static pthread_t thread_pool[THREAD_POOL_SIZE];
 // mutex for controlling access to thread_queue
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+// FUNCTION DEFINITIONS
 // Handle a connection inside the thread pool
-void *pool_handler(void *arg);
+static void *pool_handler(void *arg);
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
@@ -67,7 +70,7 @@ int main(int argc, char **argv)
 }
 
 // Handle a connection inside the thread pool
-void *pool_handler(void *arg)
+static void *pool_handler(void *arg)
 {
 	while (true) {
 		// Remove from thread pool queue

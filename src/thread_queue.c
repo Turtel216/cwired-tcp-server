@@ -1,8 +1,9 @@
 #include "thread_queue.h"
 #include <stdlib.h>
 
-struct node *head = NULL;
-struct node *tail = NULL;
+// Pointers for head and tail of queue data structure
+static struct node *head = NULL;
+static struct node *tail = NULL;
 
 // insert a socket into the queue
 void enqueue(int *client_socket)
