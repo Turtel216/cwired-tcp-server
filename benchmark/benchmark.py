@@ -8,17 +8,25 @@ SERVER_PORT = 8080
 FILE_PATH = "path/to/input.txt"
 
 # Number of concurrent connections and total requests
-CONCURRENT_CONNECTIONS = 2
-TOTAL_REQUESTS = 12
+CONCURRENT_CONNECTIONS = 50
+TOTAL_REQUESTS = 500
 
 def make_request(server_host, server_port, file_path):
     """Make a single TCP request to the server."""
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((server_host, server_port))
-            s.sendall(file_path.encode())
+            s.sendall((file_path + "\n").encode())  # Ensure newline
+
             start_time = time.perf_counter()
-            response = s.recv(4096)
+            response = b""
+            
+            while True:
+                chunk = s.recv(4096)
+                if not chunk:
+                    break
+                response += chunk  # Accumulate response
+            
             elapsed = time.perf_counter() - start_time
             return len(response) > 0, elapsed
     except (socket.error, socket.timeout) as e:
