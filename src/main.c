@@ -6,9 +6,14 @@
 #include <pthread.h>
 #include "./error.h"
 #include "./server.h"
+#include "./thread_queue.h"
 
 #define SERVER_PORT 8080
 #define SERVER_BACKLOG 100
+#define THREAD_POOL_SIZE 20
+
+// TODO: fix segfault after running two benchmark tests
+pthread_t thread_pool[THREAD_POOL_SIZE];
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
@@ -17,6 +22,10 @@ int main(int argc, char **argv)
 {
 	int server_socket, client_socket, addr_size;
 	SA_IN server_addr, client_addr;
+
+	for (size_t i = 0; i < THREAD_POOL_SIZE; ++i) {
+		pthread_create(&thread_pool[i], NULL, pool_handler, NULL);
+	}
 
 	check_err((server_socket = socket(AF_INET, SOCK_STREAM, 0)),
 		  "Failed to create socket");
@@ -40,10 +49,9 @@ int main(int argc, char **argv)
 		printf("Connected\n");
 
 		// Spawn new thread to handle connection
-		pthread_t thr;
 		int *pclient = malloc(sizeof(int));
 		*pclient = client_socket;
-		pthread_create(&thr, NULL, handle_connection, pclient);
+		enqueue(pclient);
 	}
 
 	return EXIT_SUCCESS;

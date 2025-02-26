@@ -1,5 +1,7 @@
 #include "server.h"
 #include "error.h"
+#include "thread_queue.h"
+
 #include <linux/limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -55,4 +57,15 @@ void *handle_connection(void *pclient_socket)
 	fclose(fp);
 	printf("closing connection\n");
 	return NULL;
+}
+
+// Handle a connection inside the thread pool
+void *pool_handler(void *arg)
+{
+	while (1) {
+		int *pclient = dequeue();
+		if (pclient != NULL) {
+			handle_connection(pclient);
+		}
+	}
 }
