@@ -1,7 +1,7 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-// Handle a connection inside the thread pool
-void *pool_handler(void *arg);
+// handle_connection handles an incomming connection from a given `client_socket`
+void *handle_connection(void *pclient_socket);
 
 #endif // SERVER_H_

@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Server address and port
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8080
-FILE_PATH = "/home/dimitrios/Documents/repos/cwired-tcp-server/benchmark/input.txt"
+FILE_PATH = "path/to/input.txt"
 
 # Number of concurrent connections and total requests
 CONCURRENT_CONNECTIONS = 50

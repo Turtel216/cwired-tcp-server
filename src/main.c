@@ -12,8 +12,13 @@
 #define SERVER_BACKLOG 100
 #define THREAD_POOL_SIZE 20
 
-// TODO: fix segfault after running two benchmark tests
+// thread pool for handling connections
 pthread_t thread_pool[THREAD_POOL_SIZE];
+// mutex for controlling access to thread_queue
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// Handle a connection inside the thread pool
+void *pool_handler(void *arg);
 
 typedef struct sockaddr_in SA_IN;
 typedef struct sockaddr SA;
@@ -51,8 +56,27 @@ int main(int argc, char **argv)
 		// Spawn new thread to handle connection
 		int *pclient = malloc(sizeof(int));
 		*pclient = client_socket;
+
+		// Add to thread pool queue
+		pthread_mutex_lock(&mutex);
 		enqueue(pclient);
+		pthread_mutex_unlock(&mutex);
 	}
 
 	return EXIT_SUCCESS;
+}
+
+// Handle a connection inside the thread pool
+void *pool_handler(void *arg)
+{
+	while (true) {
+		// Remove from thread pool queue
+		pthread_mutex_lock(&mutex);
+		int *pclient = dequeue();
+		pthread_mutex_unlock(&mutex);
+
+		if (pclient != NULL) {
+			handle_connection(pclient);
+		}
+	}
 }
